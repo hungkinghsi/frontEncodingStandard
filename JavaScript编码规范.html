@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>ECMAScript编程规范</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="编程规范">ECMAScript编程规范</h1>
+<h2 id="概述">概述</h2>
+<p>”编码规范“（programming style）指的是编写代码的样式规则。不同的程序员，往往有不同的编码规范。</p>
+<p>有人说，编译器的规范叫做”语法规则“（grammar），这是程序员必须遵守的；而编译器忽略的部分，就叫”编码规范“（programming style），这是程序员可以自由选择的。这种说法不完全正确，程序员固然可以自由选择编码规范，但是好的编码规范有助于写出质量更高、错误更少、更易于维护的程序。</p>
+<p>所以，编码规范的选择不应该基于个人爱好、熟悉程度、打字量等因素，而要考虑如何尽量使代码清晰易读、减少出错。你选择的，不是你喜欢的风格，而是一种能够清晰表达你的意图的风格。这一点，对于 JavaScript 这种语法自由度很高的语言尤其重要。</p>
+<p>必须牢记的一点是，如果你选定了一种“编码规范”，就应该坚持遵守，切忌多种风格混用。如果你加入他人的项目，就应该遵守现有的风格。</p>
+<h2 id="缩进">缩进</h2>
+<p>行首的空格和 Tab 键，都可以产生代码缩进效果（indent）。</p>
+<p>Tab 键可以节省击键次数，但不同的文本编辑器对 Tab 的显示不尽相同，有的显示四个空格，有的显示两个空格，所以有人觉得，空格键可以使得显示效果更统一。</p>
+<p>无论你选择哪一种方法，都是可以接受的，要做的就是始终坚持这一种选择。不要一会使用 Tab 键，一会使用空格键。</p>
+<h2 id="区块">区块</h2>
+<p>如果循环和判断的代码体只有一行，JavaScript 允许该区块（block）省略大括号。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb1-1" title="1"><span class="cf">if</span> (a)</a>
+<a class="sourceLine" id="cb1-2" title="2">  <span class="at">b</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb1-3" title="3">  <span class="at">c</span>()<span class="op">;</span></a></code></pre></div>
+<p>上面代码的原意可能是下面这样。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb2-1" title="1"><span class="cf">if</span> (a) <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-2" title="2">  <span class="at">b</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb2-3" title="3">  <span class="at">c</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="op">}</span></a></code></pre></div>
+<p>但是，实际效果却是下面这样。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">if</span> (a) <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-2" title="2">  <span class="at">b</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb3-4" title="4">  <span class="at">c</span>()<span class="op">;</span></a></code></pre></div>
+<p>因此，建议总是使用大括号表示区块。</p>
+<p>另外，区块起首的大括号的位置，有许多不同的写法。最流行的有两种，一种是起首的大括号另起一行。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb4-1" title="1">block</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="op">{</span></a>
+<a class="sourceLine" id="cb4-3" title="3">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="op">}</span></a></code></pre></div>
+<p>另一种是起首的大括号跟在关键字的后面。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb5-1" title="1">block <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-2" title="2">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="op">}</span></a></code></pre></div>
+<p>一般来说，这两种写法都可以接受。但是，JavaScript 要使用后一种，因为 JavaScript 会自动添加句末的分号，导致一些难以察觉的错误。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb6-1" title="1"><span class="cf">return</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="op">{</span></a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="dt">key</span><span class="op">:</span> value</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="op">};</span></a>
+<a class="sourceLine" id="cb6-5" title="5"></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">// 相当于</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="cf">return</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="op">{</span></a>
+<a class="sourceLine" id="cb6-9" title="9">  <span class="dt">key</span><span class="op">:</span> value</a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="op">};</span></a></code></pre></div>
+<p>上面的代码的原意，是要返回一个对象，但实际上返回的是<code>undefined</code>，因为 JavaScript 自动在<code>return</code>语句后面添加了分号。为了避免这一类错误，需要写成下面这样。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb7-1" title="1"><span class="cf">return</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-2" title="2">  <span class="dt">key </span><span class="op">:</span> value</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="op">};</span></a></code></pre></div>
+<p>因此，表示区块起首的大括号，不要另起一行。</p>
+<h2 id="圆括号">圆括号</h2>
+<p>圆括号（parentheses）在 JavaScript 中有两种作用，一种表示函数的调用，另一种表示表达式的组合（grouping）。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb8-1" title="1"><span class="co">// 圆括号表示函数的调用</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="va">console</span>.<span class="at">log</span>(<span class="st">&#39;abc&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">// 圆括号表示表达式的组合</span></a>
+<a class="sourceLine" id="cb8-5" title="5">(<span class="dv">1</span> <span class="op">+</span> <span class="dv">2</span>) <span class="op">*</span> <span class="dv">3</span></a></code></pre></div>
+<p>建议可以用空格，区分这两种不同的括号。</p>
+<blockquote>
+<ol type="1">
+<li><p>表示函数调用时，函数名与左括号之间没有空格。</p></li>
+<li><p>表示函数定义时，函数名与左括号之间没有空格。</p></li>
+<li><p>其他情况时，前面位置的语法元素与左括号之间，都有一个空格。</p></li>
+</ol>
+</blockquote>
+<p>按照上面的规则，下面的写法都是不规范的。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb9-1" title="1"><span class="at">foo</span> (bar)</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="cf">return</span>(a<span class="op">+</span>b)<span class="op">;</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="cf">if</span>(a <span class="op">===</span> <span class="dv">0</span>) <span class="op">{</span>...<span class="op">}</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="kw">function</span> <span class="at">foo</span> (b) <span class="op">{</span>...<span class="op">}</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="kw">function</span>(x) <span class="op">{</span>...<span class="op">}</span></a></code></pre></div>
+<p>上面代码的最后一行是一个匿名函数，<code>function</code>是语法关键字，不是函数名，所以与左括号之间应该要有一个空格。</p>
+<h2 id="行尾的分号">行尾的分号</h2>
+<p>分号表示一条语句的结束。JavaScript 允许省略行尾的分号。事实上，确实有一些开发者行尾从来不写分号。但是，由于下面要讨论的原因，建议还是不要省略这个分号。</p>
+<h3 id="不使用分号的情况">不使用分号的情况</h3>
+<p>首先，以下三种情况，语法规定本来就不需要在结尾添加分号。</p>
+<p><strong>（1）for 和 while 循环</strong></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb10-1" title="1"><span class="cf">for</span> ( <span class="op">;</span> <span class="op">;</span> ) <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="op">}</span> <span class="co">// 没有分号</span></a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="cf">while</span> (<span class="kw">true</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="op">}</span> <span class="co">// 没有分号</span></a></code></pre></div>
+<p>注意，<code>do...while</code>循环是有分号的。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb11-1" title="1"><span class="cf">do</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-2" title="2">  a<span class="op">--;</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="op">}</span> <span class="cf">while</span>(a <span class="op">&gt;</span> <span class="dv">0</span>)<span class="op">;</span> <span class="co">// 分号不能省略</span></a></code></pre></div>
+<p><strong>（2）分支语句：if，switch，try</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb12-1" title="1"><span class="cf">if</span> (<span class="kw">true</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="op">}</span> <span class="co">// 没有分号</span></a>
+<a class="sourceLine" id="cb12-3" title="3"></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="cf">switch</span> () <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="op">}</span> <span class="co">// 没有分号</span></a>
+<a class="sourceLine" id="cb12-6" title="6"></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="cf">try</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-8" title="8"><span class="op">}</span> <span class="cf">catch</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="op">}</span> <span class="co">// 没有分号</span></a></code></pre></div>
+<p><strong>（3）函数的声明语句</strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">function</span> <span class="at">f</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="op">}</span> <span class="co">// 没有分号</span></a></code></pre></div>
+<p>注意，函数表达式仍然要使用分号。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">var</span> f <span class="op">=</span> <span class="kw">function</span> <span class="at">f</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="op">};</span></a></code></pre></div>
+<p>以上三种情况，如果使用了分号，并不会出错。因为，解释引擎会把这个分号解释为空语句。</p>
+<h3 id="分号的自动添加">分号的自动添加</h3>
+<p>除了上一节的三种情况，所有语句都应该使用分号。但是，如果没有使用分号，大多数情况下，JavaScript 会自动添加。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">var</span> a <span class="op">=</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="co">// 等同于</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="kw">var</span> a <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></a></code></pre></div>
+<p>这种语法特性被称为“分号的自动添加”（Automatic Semicolon Insertion，简称 ASI）。</p>
+<p>因此，有人提倡省略句尾的分号。麻烦的是，如果下一行的开始可以与本行的结尾连在一起解释，JavaScript 就不会自动添加分号。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb16-1" title="1"><span class="co">// 等同于 var a = 3</span></a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="kw">var</span></a>
+<a class="sourceLine" id="cb16-3" title="3">a</a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="op">=</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="dv">3</span></a>
+<a class="sourceLine" id="cb16-6" title="6"></a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="co">// 等同于 &#39;abc&#39;.length</span></a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="st">&#39;abc&#39;</span></a>
+<a class="sourceLine" id="cb16-9" title="9">.<span class="at">length</span></a>
+<a class="sourceLine" id="cb16-10" title="10"></a>
+<a class="sourceLine" id="cb16-11" title="11"><span class="co">// 等同于 return a + b;</span></a>
+<a class="sourceLine" id="cb16-12" title="12"><span class="cf">return</span> a <span class="op">+</span></a>
+<a class="sourceLine" id="cb16-13" title="13">b<span class="op">;</span></a>
+<a class="sourceLine" id="cb16-14" title="14"></a>
+<a class="sourceLine" id="cb16-15" title="15"><span class="co">// 等同于 obj.foo(arg1, arg2);</span></a>
+<a class="sourceLine" id="cb16-16" title="16"><span class="va">obj</span>.<span class="at">foo</span>(arg1<span class="op">,</span></a>
+<a class="sourceLine" id="cb16-17" title="17">arg2)<span class="op">;</span></a>
+<a class="sourceLine" id="cb16-18" title="18"></a>
+<a class="sourceLine" id="cb16-19" title="19"><span class="co">// 等同于 3 * 2 + 10 * (27 / 6)</span></a>
+<a class="sourceLine" id="cb16-20" title="20"><span class="dv">3</span> <span class="op">*</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb16-21" title="21"><span class="op">+</span></a>
+<a class="sourceLine" id="cb16-22" title="22"><span class="dv">10</span> <span class="op">*</span> (<span class="dv">27</span> / <span class="dv">6</span>)</a></code></pre></div>
+<p>上面代码都会多行放在一起解释，不会每一行自动添加分号。这些例子还是比较容易看出来的，但是下面这个例子就不那么容易看出来了。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb17-1" title="1">x <span class="op">=</span> y</a>
+<a class="sourceLine" id="cb17-2" title="2">(<span class="kw">function</span> () <span class="op">{</span></a>
+<a class="sourceLine" id="cb17-3" title="3">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="op">}</span>)()<span class="op">;</span></a>
+<a class="sourceLine" id="cb17-5" title="5"></a>
+<a class="sourceLine" id="cb17-6" title="6"><span class="co">// 等同于</span></a>
+<a class="sourceLine" id="cb17-7" title="7">x <span class="op">=</span> <span class="at">y</span>(<span class="kw">function</span> () <span class="op">{</span>...<span class="op">}</span>)()<span class="op">;</span></a></code></pre></div>
+<p>下面是更多不会自动添加分号的例子。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb18-1" title="1"><span class="co">// 引擎解释为 c(d+e)</span></a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="kw">var</span> a <span class="op">=</span> b <span class="op">+</span> c</a>
+<a class="sourceLine" id="cb18-3" title="3">(d<span class="op">+</span>e).<span class="at">toString</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb18-4" title="4"></a>
+<a class="sourceLine" id="cb18-5" title="5"><span class="co">// 引擎解释为 a = b/hi/g.exec(c).map(d)</span></a>
+<a class="sourceLine" id="cb18-6" title="6"><span class="co">// 正则表达式的斜杠，会当作除法运算符</span></a>
+<a class="sourceLine" id="cb18-7" title="7">a <span class="op">=</span> b</a>
+<a class="sourceLine" id="cb18-8" title="8">/hi/<span class="va">g</span>.<span class="at">exec</span>(c).<span class="at">map</span>(d)<span class="op">;</span></a>
+<a class="sourceLine" id="cb18-9" title="9"></a>
+<a class="sourceLine" id="cb18-10" title="10"><span class="co">// 解释为&#39;b&#39;[&#39;red&#39;, &#39;green&#39;]，</span></a>
+<a class="sourceLine" id="cb18-11" title="11"><span class="co">// 即把字符串当作一个数组，按索引取值</span></a>
+<a class="sourceLine" id="cb18-12" title="12"><span class="kw">var</span> a <span class="op">=</span> <span class="st">&#39;b&#39;</span></a>
+<a class="sourceLine" id="cb18-13" title="13">[<span class="st">&#39;red&#39;</span><span class="op">,</span> <span class="st">&#39;green&#39;</span>].<span class="at">forEach</span>(<span class="kw">function</span> (c) <span class="op">{</span></a>
+<a class="sourceLine" id="cb18-14" title="14">  <span class="va">console</span>.<span class="at">log</span>(c)<span class="op">;</span></a>
+<a class="sourceLine" id="cb18-15" title="15"><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb18-16" title="16"></a>
+<a class="sourceLine" id="cb18-17" title="17"><span class="co">// 解释为 function (x) { return x }(a++)</span></a>
+<a class="sourceLine" id="cb18-18" title="18"><span class="co">// 即调用匿名函数，结果f等于0</span></a>
+<a class="sourceLine" id="cb18-19" title="19"><span class="kw">var</span> a <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb18-20" title="20"><span class="kw">var</span> f <span class="op">=</span> <span class="kw">function</span> (x) <span class="op">{</span> <span class="cf">return</span> x <span class="op">}</span></a>
+<a class="sourceLine" id="cb18-21" title="21">(a<span class="op">++</span>)</a></code></pre></div>
+<p>只有下一行的开始与本行的结尾，无法放在一起解释，JavaScript 引擎才会自动添加分号。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb19-1" title="1"><span class="cf">if</span> (a <span class="op">&lt;</span> <span class="dv">0</span>) a <span class="op">=</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="va">console</span>.<span class="at">log</span>(a)</a>
+<a class="sourceLine" id="cb19-3" title="3"></a>
+<a class="sourceLine" id="cb19-4" title="4"><span class="co">// 等同于下面的代码，</span></a>
+<a class="sourceLine" id="cb19-5" title="5"><span class="co">// 因为 0console 没有意义</span></a>
+<a class="sourceLine" id="cb19-6" title="6"><span class="cf">if</span> (a <span class="op">&lt;</span> <span class="dv">0</span>) a <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb19-7" title="7"><span class="va">console</span>.<span class="at">log</span>(a)</a></code></pre></div>
+<p>另外，如果一行的起首是“自增”（<code>++</code>）或“自减”（<code>--</code>）运算符，则它们的前面会自动添加分号。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb20-1" title="1">a <span class="op">=</span> b <span class="op">=</span> c <span class="op">=</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb20-2" title="2"></a>
+<a class="sourceLine" id="cb20-3" title="3">a</a>
+<a class="sourceLine" id="cb20-4" title="4"><span class="op">++</span></a>
+<a class="sourceLine" id="cb20-5" title="5">b</a>
+<a class="sourceLine" id="cb20-6" title="6"><span class="op">--</span></a>
+<a class="sourceLine" id="cb20-7" title="7">c</a>
+<a class="sourceLine" id="cb20-8" title="8"></a>
+<a class="sourceLine" id="cb20-9" title="9"><span class="va">console</span>.<span class="at">log</span>(a<span class="op">,</span> b<span class="op">,</span> c)</a>
+<a class="sourceLine" id="cb20-10" title="10"><span class="co">// 1 2 0</span></a></code></pre></div>
+<p>上面代码之所以会得到<code>1 2 0</code>的结果，原因是自增和自减运算符前，自动加上了分号。上面的代码实际上等同于下面的形式。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb21-1" title="1">a <span class="op">=</span> b <span class="op">=</span> c <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb21-2" title="2">a<span class="op">;</span></a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="op">++</span>b<span class="op">;</span></a>
+<a class="sourceLine" id="cb21-4" title="4"><span class="op">--</span>c<span class="op">;</span></a></code></pre></div>
+<p>如果<code>continue</code>、<code>break</code>、<code>return</code>和<code>throw</code>这四个语句后面，直接跟换行符，则会自动添加分号。这意味着，如果<code>return</code>语句返回的是一个对象的字面量，起首的大括号一定要写在同一行，否则得不到预期结果。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb22-1" title="1"><span class="cf">return</span></a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="op">{</span> <span class="dt">first</span><span class="op">:</span> <span class="st">&#39;Jane&#39;</span> <span class="op">};</span></a>
+<a class="sourceLine" id="cb22-3" title="3"></a>
+<a class="sourceLine" id="cb22-4" title="4"><span class="co">// 解释成</span></a>
+<a class="sourceLine" id="cb22-5" title="5"><span class="cf">return</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb22-6" title="6"><span class="op">{</span> <span class="dt">first</span><span class="op">:</span> <span class="st">&#39;Jane&#39;</span> <span class="op">};</span></a></code></pre></div>
+<p>由于解释引擎自动添加分号的行为难以预测，因此编写代码的时候不应该省略行尾的分号。</p>
+<p>不应该省略结尾的分号，还有一个原因。有些 JavaScript 代码压缩器（uglifier）不会自动添加分号，因此遇到没有分号的结尾，就会让代码保持原状，而不是压缩成一行，使得压缩无法得到最优的结果。</p>
+<p>另外，不写结尾的分号，可能会导致脚本合并出错。所以，有的代码库在第一行语句开始前，会加上一个分号。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb23-1" title="1"><span class="op">;</span><span class="kw">var</span> a <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="co">// ...</span></a></code></pre></div>
+<p>上面这种写法就可以避免与其他脚本合并时，排在前面的脚本最后一行语句没有分号，导致运行出错的问题。</p>
+<h2 id="全局变量">全局变量</h2>
+<p>JavaScript 最大的语法缺点，可能就是全局变量对于任何一个代码块，都是可读可写。这对代码的模块化和重复使用，非常不利。</p>
+<p>因此，建议避免使用全局变量。如果不得不使用，可以考虑用大写字母表示变量名，这样更容易看出这是全局变量，比如<code>UPPER_CASE</code>。</p>
+<h2 id="变量声明">变量声明</h2>
+<p>JavaScript 会自动将变量声明”提升“（hoist）到代码块（block）的头部。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb24-1" title="1"><span class="cf">if</span> (<span class="op">!</span>x) <span class="op">{</span></a>
+<a class="sourceLine" id="cb24-2" title="2">  <span class="kw">var</span> x <span class="op">=</span> <span class="op">{};</span></a>
+<a class="sourceLine" id="cb24-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb24-4" title="4"></a>
+<a class="sourceLine" id="cb24-5" title="5"><span class="co">// 等同于</span></a>
+<a class="sourceLine" id="cb24-6" title="6"><span class="kw">var</span> x<span class="op">;</span></a>
+<a class="sourceLine" id="cb24-7" title="7"><span class="cf">if</span> (<span class="op">!</span>x) <span class="op">{</span></a>
+<a class="sourceLine" id="cb24-8" title="8">  x <span class="op">=</span> <span class="op">{};</span></a>
+<a class="sourceLine" id="cb24-9" title="9"><span class="op">}</span></a></code></pre></div>
+<p>这意味着，变量<code>x</code>是<code>if</code>代码块之前就存在了。为了避免可能出现的问题，最好把变量声明都放在代码块的头部。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb25-1" title="1"><span class="cf">for</span> (<span class="kw">var</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb25-2" title="2">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb25-4" title="4"></a>
+<a class="sourceLine" id="cb25-5" title="5"><span class="co">// 写成</span></a>
+<a class="sourceLine" id="cb25-6" title="6"><span class="kw">var</span> i<span class="op">;</span></a>
+<a class="sourceLine" id="cb25-7" title="7"><span class="cf">for</span> (i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb25-8" title="8">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="op">}</span></a></code></pre></div>
+<p>上面这样的写法，就容易看出存在一个全局的循环变量<code>i</code>。</p>
+<p>另外，所有函数都应该在使用之前定义。函数内部的变量声明，都应该放在函数的头部。</p>
+<h2 id="with-语句">with 语句</h2>
+<p><code>with</code>可以减少代码的书写，但是会造成混淆。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb26-1" title="1"><span class="cf">with</span> (o) <span class="op">{</span></a>
+<a class="sourceLine" id="cb26-2" title="2">　foo <span class="op">=</span> bar<span class="op">;</span></a>
+<a class="sourceLine" id="cb26-3" title="3"><span class="op">}</span></a></code></pre></div>
+<p>上面的代码，可以有四种运行结果：</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb27-1" title="1"><span class="va">o</span>.<span class="at">foo</span> <span class="op">=</span> bar<span class="op">;</span></a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="va">o</span>.<span class="at">foo</span> <span class="op">=</span> <span class="va">o</span>.<span class="at">bar</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb27-3" title="3">foo <span class="op">=</span> bar<span class="op">;</span></a>
+<a class="sourceLine" id="cb27-4" title="4">foo <span class="op">=</span> <span class="va">o</span>.<span class="at">bar</span><span class="op">;</span></a></code></pre></div>
+<p>这四种结果都可能发生，取决于不同的变量是否有定义。因此，不要使用<code>with</code>语句。</p>
+<h2 id="相等和严格相等">相等和严格相等</h2>
+<p>JavaScript 有两个表示相等的运算符：”相等“（<code>==</code>）和”严格相等“（<code>===</code>）。</p>
+<p>相等运算符会自动转换变量类型，造成很多意想不到的情况。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb28-1" title="1"><span class="dv">0</span> <span class="op">==</span> <span class="st">&#39;&#39;</span><span class="co">// true</span></a>
+<a class="sourceLine" id="cb28-2" title="2"><span class="dv">1</span> <span class="op">==</span> <span class="kw">true</span> <span class="co">// true</span></a>
+<a class="sourceLine" id="cb28-3" title="3"><span class="dv">2</span> <span class="op">==</span> <span class="kw">true</span> <span class="co">// false</span></a>
+<a class="sourceLine" id="cb28-4" title="4"><span class="dv">0</span> <span class="op">==</span> <span class="st">&#39;0&#39;</span> <span class="co">// true</span></a>
+<a class="sourceLine" id="cb28-5" title="5"><span class="kw">false</span> <span class="op">==</span> <span class="st">&#39;false&#39;</span> <span class="co">// false</span></a>
+<a class="sourceLine" id="cb28-6" title="6"><span class="kw">false</span> <span class="op">==</span> <span class="st">&#39;0&#39;</span> <span class="co">// true</span></a>
+<a class="sourceLine" id="cb28-7" title="7"><span class="st">&#39; </span><span class="sc">\t\r\n</span><span class="st"> &#39;</span> <span class="op">==</span> <span class="dv">0</span> <span class="co">// true</span></a></code></pre></div>
+<p>因此，建议不要使用相等运算符（<code>==</code>），只使用严格相等运算符（<code>===</code>）。</p>
+<h2 id="语句的合并">语句的合并</h2>
+<p>有些程序员追求简洁，喜欢合并不同目的的语句。比如，原来的语句是</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb29-1" title="1">a <span class="op">=</span> b<span class="op">;</span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="cf">if</span> (a) <span class="op">{</span></a>
+<a class="sourceLine" id="cb29-3" title="3">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb29-4" title="4"><span class="op">}</span></a></code></pre></div>
+<p>他喜欢写成下面这样。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb30-1" title="1"><span class="cf">if</span> (a <span class="op">=</span> b) <span class="op">{</span></a>
+<a class="sourceLine" id="cb30-2" title="2">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="op">}</span></a></code></pre></div>
+<p>虽然语句少了一行，但是可读性大打折扣，而且会造成误读，让别人误解这行代码的意思是下面这样。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb31-1" title="1"><span class="cf">if</span> （a <span class="op">===</span> b）<span class="op">{</span></a>
+<a class="sourceLine" id="cb31-2" title="2">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="op">}</span></a></code></pre></div>
+<p>建议不要将不同目的的语句，合并成一行。</p>
+<h2 id="自增和自减运算符">自增和自减运算符</h2>
+<p>自增（<code>++</code>）和自减（<code>--</code>）运算符，放在变量的前面或后面，返回的值不一样，很容易发生错误。事实上，所有的<code>++</code>运算符都可以用<code>+= 1</code>代替。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb32-1" title="1"><span class="op">++</span>x</a>
+<a class="sourceLine" id="cb32-2" title="2"><span class="co">// 等同于</span></a>
+<a class="sourceLine" id="cb32-3" title="3">x <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></a></code></pre></div>
+<p>改用<code>+= 1</code>，代码变得更清晰了。</p>
+<p>建议自增（<code>++</code>）和自减（<code>--</code>）运算符尽量使用<code>+=</code>和<code>-=</code>代替。</p>
+<h2 id="switchcase-结构">switch…case 结构</h2>
+<p><code>switch...case</code>结构要求，在每一个<code>case</code>的最后一行必须是<code>break</code>语句，否则会接着运行下一个<code>case</code>。这样不仅容易忘记，还会造成代码的冗长。</p>
+<p>而且，<code>switch...case</code>不使用大括号，不利于代码形式的统一。此外，这种结构类似于<code>goto</code>语句，容易造成程序流程的混乱，使得代码结构混乱不堪，不符合面向对象编程的原则。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">function</span> <span class="at">doAction</span>(action) <span class="op">{</span></a>
+<a class="sourceLine" id="cb33-2" title="2">  <span class="cf">switch</span> (action) <span class="op">{</span></a>
+<a class="sourceLine" id="cb33-3" title="3">    <span class="cf">case</span> <span class="st">&#39;hack&#39;</span><span class="op">:</span></a>
+<a class="sourceLine" id="cb33-4" title="4">      <span class="cf">return</span> <span class="st">&#39;hack&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb33-5" title="5">    <span class="cf">case</span> <span class="st">&#39;slash&#39;</span><span class="op">:</span></a>
+<a class="sourceLine" id="cb33-6" title="6">      <span class="cf">return</span> <span class="st">&#39;slash&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb33-7" title="7">    <span class="cf">case</span> <span class="st">&#39;run&#39;</span><span class="op">:</span></a>
+<a class="sourceLine" id="cb33-8" title="8">      <span class="cf">return</span> <span class="st">&#39;run&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb33-9" title="9">    <span class="dt">default</span><span class="op">:</span></a>
+<a class="sourceLine" id="cb33-10" title="10">      <span class="cf">throw</span> <span class="kw">new</span> <span class="at">Error</span>(<span class="st">&#39;Invalid action.&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb33-11" title="11">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb33-12" title="12"><span class="op">}</span></a></code></pre></div>
+<p>上面的代码建议改写成对象结构。</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">function</span> <span class="at">doAction</span>(action) <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-2" title="2">  <span class="kw">var</span> actions <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-3" title="3">    <span class="st">&#39;hack&#39;</span><span class="op">:</span> <span class="kw">function</span> () <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-4" title="4">      <span class="cf">return</span> <span class="st">&#39;hack&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb34-5" title="5">    <span class="op">},</span></a>
+<a class="sourceLine" id="cb34-6" title="6">    <span class="st">&#39;slash&#39;</span><span class="op">:</span> <span class="kw">function</span> () <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-7" title="7">      <span class="cf">return</span> <span class="st">&#39;slash&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb34-8" title="8">    <span class="op">},</span></a>
+<a class="sourceLine" id="cb34-9" title="9">    <span class="st">&#39;run&#39;</span><span class="op">:</span> <span class="kw">function</span> () <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-10" title="10">      <span class="cf">return</span> <span class="st">&#39;run&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb34-11" title="11">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb34-12" title="12">  <span class="op">};</span></a>
+<a class="sourceLine" id="cb34-13" title="13"></a>
+<a class="sourceLine" id="cb34-14" title="14">  <span class="cf">if</span> (<span class="kw">typeof</span> actions[action] <span class="op">!==</span> <span class="st">&#39;function&#39;</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-15" title="15">    <span class="cf">throw</span> <span class="kw">new</span> <span class="at">Error</span>(<span class="st">&#39;Invalid action.&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb34-16" title="16">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb34-17" title="17"></a>
+<a class="sourceLine" id="cb34-18" title="18">  <span class="cf">return</span> actions[action]()<span class="op">;</span></a>
+<a class="sourceLine" id="cb34-19" title="19"><span class="op">}</span></a></code></pre></div>
+<p>因此，建议<code>switch...case</code>结构可以用对象结构代替。</p>
+</body>
+</html>

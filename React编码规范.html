@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>React编码规范</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="react-编码规范">React 编码规范</h1>
+<h2 id="基本规范">基本规范</h2>
+<ul>
+<li>每个文件只包含的一个 React 组件：
+<ul>
+<li>联系紧密的组件可以使用「命名空间」的形式；</li>
+<li>每个文件中可包含多个纯函数组件。</li>
+</ul></li>
+<li>始终使用 JSX 语法，不要使用 <code>React.createElement</code> 创建 ReactElement，以提高编写速度、可读性、可维护性（没有 JSX 转换的特殊场景例外，如在 <code>console</code> 中测试组件）。</li>
+</ul>
+<h2 id="组件创建方式">组件创建方式</h2>
+<p>React 中可以通过三种方式创建组件：ES6 <code>class</code>、<a href="https://facebook.github.io/react/docs/react-without-es6.html"><code>createReactClass</code></a>、<a href="https://facebook.github.io/react/docs/components-and-props.html#functional-and-class-components">函数式组件</a> 。</p>
+<ul>
+<li><p>如果组件有内部状态，或者使用了生命周期方法，优先使用 <code>class extends React.Component</code> ：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb1-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">var</span> createReactClass <span class="op">=</span> <span class="at">require</span>(<span class="st">&#39;create-react-class&#39;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">var</span> Greeting <span class="op">=</span> <span class="at">createReactClass</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb1-4" title="4">  <span class="co">/// ...</span></a>
+<a class="sourceLine" id="cb1-5" title="5">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-6" title="6">    <span class="cf">return</span> <span class="op">&lt;</span>h1<span class="op">&gt;</span>Hello<span class="op">,</span> <span class="op">{</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">name</span><span class="op">}</span>&lt;/h1<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb1-7" title="7">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="op">}</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb1-9" title="9"></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="kw">class</span> Greeting <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-12" title="12">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb1-13" title="13">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-14" title="14">    <span class="cf">return</span> <span class="op">&lt;</span>h1<span class="op">&gt;</span>Hello<span class="op">,</span> <span class="op">{</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">name</span><span class="op">}</span>&lt;/h1<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb1-15" title="15">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-16" title="16"><span class="op">}</span></a></code></pre></div>
+<p>如果组件内部未使用状态或生命周期方法，优先使用普通函数（非箭头函数）创建组件：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb2-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">class</span> Listing <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-3" title="3">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-4" title="4">    <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;{</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">hello</span><span class="op">}</span>&lt;/div<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb2-5" title="5">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="op">}</span></a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="co">// bad (relying on function name inference is discouraged)</span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="kw">const</span> Listing <span class="op">=</span> (<span class="op">{</span> hello <span class="op">}</span>) <span class="op">=&gt;</span> (</a>
+<a class="sourceLine" id="cb2-10" title="10">  <span class="op">&lt;</span>div<span class="op">&gt;{</span>hello<span class="op">}</span>&lt;/div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb2-11" title="11">)<span class="op">;</span></a>
+<a class="sourceLine" id="cb2-12" title="12"></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="kw">function</span> <span class="at">Listing</span>(<span class="op">{</span> hello <span class="op">}</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-15" title="15">  <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;{</span>hello<span class="op">}</span>&lt;/div<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb2-16" title="16"><span class="op">}</span></a></code></pre></div></li>
+</ul>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://toddmotto.com/react-create-class-versus-component/">React.createClass versus extends React.Component</a></li>
+</ul>
+<h2 id="mixins">Mixins</h2>
+<ul>
+<li><a href="https://facebook.github.io/react/blog/2016/07/13/mixins-considered-harmful.html">不要使用 mixins</a>；</li>
+<li>使用 ES6 class 语法的 React 组件不支持 mixins（参考<a href="https://facebook.github.io/react/docs/higher-order-components.html">高阶组件</a>）。</li>
+</ul>
+<blockquote>
+<p>Why? Mixins introduce implicit dependencies, cause name clashes, and cause snowballing complexity. Most use cases for mixins can be accomplished in better ways via components, higher-order components, or utility modules.</p>
+</blockquote>
+<h2 id="命名规范">命名规范</h2>
+<ul>
+<li><strong>扩展名</strong>：使用 <code>.jsx</code> 作为 React 组件的扩展名；</li>
+<li><strong>文件名</strong>：使用<strong>大驼峰命名法（PascalCase）</strong>，如 <code>MyComponent.jsx</code>；</li>
+<li><p><strong>组件命名</strong>：组件名称和文件名一致，如 <code>MyComponent.jsx</code> 里的组件名应该是 <code>MyComponent</code>；一个目录的根组件使用 <code>index.jsx</code> 命名，以目录名称作为组件名称；</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb3-1" title="1"><span class="co">// Use the filename as the component name</span></a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">// file contents</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="kw">class</span> CheckBox <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-5" title="5">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="op">}</span></a>
+<a class="sourceLine" id="cb3-7" title="7"></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="im">export</span> <span class="im">default</span> CheckBox<span class="op">;</span></a>
+<a class="sourceLine" id="cb3-9" title="9"></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="co">// in some other file</span></a>
+<a class="sourceLine" id="cb3-11" title="11"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="im">import</span> CheckBox <span class="im">from</span> <span class="st">&#39;./checkBox&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb3-13" title="13"></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb3-15" title="15"><span class="im">import</span> CheckBox <span class="im">from</span> <span class="st">&#39;./check_box&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb3-16" title="16"></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="im">import</span> CheckBox <span class="im">from</span> <span class="st">&#39;./CheckBox&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb3-19" title="19"></a>
+<a class="sourceLine" id="cb3-20" title="20"></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">// for root components of a directory,</span></a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="co">// use index.jsx as the filename and use the directory name as the component name</span></a>
+<a class="sourceLine" id="cb3-23" title="23"></a>
+<a class="sourceLine" id="cb3-24" title="24"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb3-25" title="25"><span class="im">import</span> Footer <span class="im">from</span> <span class="st">&#39;./Footer/Footer.jsx&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb3-26" title="26"></a>
+<a class="sourceLine" id="cb3-27" title="27"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb3-28" title="28"><span class="im">import</span> Footer <span class="im">from</span> <span class="st">&#39;./Footer/index.jsx&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb3-29" title="29"></a>
+<a class="sourceLine" id="cb3-30" title="30"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb3-31" title="31"><span class="im">import</span> Footer <span class="im">from</span> <span class="st">&#39;./Footer&#39;</span><span class="op">;</span></a></code></pre></div></li>
+<li><p><strong>引用命名</strong>：React 组件使用<strong>大驼峰命名法（PascalCase）</strong>，组件实例使用<strong>小驼峰命名法（camelCase）</strong>；</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb4-1" title="1">    <span class="co">// bad</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="im">import</span> reservationCard <span class="im">from</span> <span class="st">&#39;./ReservationCard&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="im">import</span> ReservationCard <span class="im">from</span> <span class="st">&#39;./ReservationCard&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb4-6" title="6"></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="kw">const</span> ReservationItem <span class="op">=</span> <span class="op">&lt;</span>ReservationCard /<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb4-9" title="9"></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="kw">const</span> reservationItem <span class="op">=</span> <span class="op">&lt;</span>ReservationCard /<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb4-12" title="12"></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">// HTML tag</span></a>
+<a class="sourceLine" id="cb4-14" title="14"><span class="kw">const</span> myDivElement <span class="op">=</span> <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;foo&quot;</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb4-15" title="15"><span class="va">ReactDOM</span>.<span class="at">render</span>(myDivElement<span class="op">,</span> mountNode)<span class="op">;</span></a></code></pre></div></li>
+<li><p><strong>高阶组件命名</strong>: Use a composite of the higher-order component’s name and the passed-in component’s name as the <code>displayName</code> on the generated component. For example, the higher-order component <code>withFoo()</code>, when passed a component <code>Bar</code> should produce a component with a <code>displayName</code> of <code>withFoo(Bar)</code>.</p>
+<blockquote>
+<p>Why? A component’s <code>displayName</code> may be used by developer tools or in error messages, and having a value that clearly expresses this relationship helps people understand what is happening.</p>
+</blockquote>
+<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb5-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="at">withFoo</span>(WrappedComponent) <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-3" title="3">  <span class="cf">return</span> <span class="kw">function</span> <span class="at">WithFoo</span>(props) <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-4" title="4">    <span class="cf">return</span> <span class="op">&lt;</span>WrappedComponent <span class="op">{</span>...<span class="at">props</span><span class="op">}</span> foo /<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb5-5" title="5">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="op">}</span></a>
+<a class="sourceLine" id="cb5-7" title="7"></a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="at">withFoo</span>(WrappedComponent) <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-10" title="10">  <span class="kw">function</span> <span class="at">WithFoo</span>(props) <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-11" title="11">    <span class="cf">return</span> <span class="op">&lt;</span>WrappedComponent <span class="op">{</span>...<span class="at">props</span><span class="op">}</span> foo /<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb5-12" title="12">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb5-13" title="13"></a>
+<a class="sourceLine" id="cb5-14" title="14">  <span class="kw">const</span> wrappedComponentName <span class="op">=</span> <span class="va">WrappedComponent</span>.<span class="at">displayName</span></a>
+<a class="sourceLine" id="cb5-15" title="15">    <span class="op">||</span> <span class="va">WrappedComponent</span>.<span class="at">name</span></a>
+<a class="sourceLine" id="cb5-16" title="16">    <span class="op">||</span> <span class="st">&#39;Component&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb5-17" title="17"></a>
+<a class="sourceLine" id="cb5-18" title="18">  <span class="va">WithFoo</span>.<span class="at">displayName</span> <span class="op">=</span> <span class="vs">`withFoo(</span><span class="sc">${</span>wrappedComponentName<span class="sc">}</span><span class="vs">)`</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb5-19" title="19">  <span class="cf">return</span> WithFoo<span class="op">;</span></a>
+<a class="sourceLine" id="cb5-20" title="20"><span class="op">}</span></a></code></pre></div></li>
+</ul>
+<h3 id="带命名空间的组件">带命名空间的组件</h3>
+<ul>
+<li><p>如果一个组件有许多关联子组件，可以以该组件作为命名空间编写、调用子组件。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">class</span> Form <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span>  </a>
+<a class="sourceLine" id="cb6-2" title="2">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb6-4" title="4"></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="kw">class</span> Row <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="kw">class</span> Label <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="kw">class</span> Input <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb6-8" title="8"></a>
+<a class="sourceLine" id="cb6-9" title="9"><span class="va">Form</span>.<span class="at">Row</span> <span class="op">=</span> Row<span class="op">;</span></a>
+<a class="sourceLine" id="cb6-10" title="10"><span class="va">Form</span>.<span class="at">Label</span> <span class="op">=</span> Label<span class="op">;</span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="va">Form</span>.<span class="at">Input</span> <span class="op">=</span> Input<span class="op">;</span></a>
+<a class="sourceLine" id="cb6-12" title="12"></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="im">export</span> <span class="im">default</span> Form<span class="op">;</span></a>
+<a class="sourceLine" id="cb6-14" title="14"></a>
+<a class="sourceLine" id="cb6-15" title="15"><span class="co">// refence Form component</span></a>
+<a class="sourceLine" id="cb6-16" title="16"><span class="im">import</span> Form <span class="im">from</span> <span class="st">&#39;./Form&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb6-17" title="17"></a>
+<a class="sourceLine" id="cb6-18" title="18"><span class="kw">const</span> App <span class="op">=</span> (</a>
+<a class="sourceLine" id="cb6-19" title="19">  <span class="op">&lt;</span>Form<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-20" title="20">    <span class="op">&lt;</span><span class="va">Form</span>.<span class="at">Row</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-21" title="21">      <span class="op">&lt;</span><span class="va">Form</span>.<span class="at">Label</span> /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-22" title="22">      <span class="op">&lt;</span><span class="va">Form</span>.<span class="at">Input</span> /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-23" title="23">    &lt;/<span class="va">Form</span>.<span class="at">Row</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-24" title="24">  &lt;/Form<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-25" title="25">)<span class="op">;</span></a></code></pre></div></li>
+</ul>
+<h2 id="组件声明">组件声明</h2>
+<ul>
+<li><p>不要使用 <code>displayName</code> 来命名组件，通过引用来命名。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb7-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="im">export</span> <span class="im">default</span> <span class="va">React</span>.<span class="at">createClass</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">displayName</span><span class="op">:</span> <span class="st">&#39;ReservationCard&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb7-4" title="4">  <span class="co">// stuff goes here</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="op">}</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb7-6" title="6"></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="kw">class</span> ReservationCard <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="op">}</span></a>
+<a class="sourceLine" id="cb7-10" title="10"></a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="im">export</span> <span class="im">default</span> ReservationCard<span class="op">;</span></a></code></pre></div></li>
+</ul>
+<h2 id="属性">属性</h2>
+<h3 id="属性命名">属性命名</h3>
+<ul>
+<li>React 组件的属性使用<strong>小驼峰命名法</strong>；</li>
+<li>使用 <code>className</code> 代替 <code>class</code> 属性；</li>
+<li>使用 <code>htmlFor</code> 代替 <code>for</code> 属性；</li>
+<li><p>不要把 DOM 组件的属性用作其他用途。 &gt; Why? People expect props like <code>style</code> and <code>className</code> to mean one specific thing. Varying this API for a subset of your app makes the code less readable and less maintainable, and may cause bugs.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb8-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="op">&lt;</span>MyComponent style<span class="op">=</span><span class="st">&quot;fancy&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="op">&lt;</span>MyComponent variant<span class="op">=</span><span class="st">&quot;fancy&quot;</span> /&gt;</a></code></pre></div></li>
+</ul>
+<p><strong>传递给 HTML 的属性：</strong></p>
+<ul>
+<li>传递给 HTML 元素的自定义属性，需要添加 <code>data-</code> 前缀，React 不会渲染非标准属性；</li>
+<li><a href="http://www.w3.org/WAI/intro/aria">无障碍</a>属性 <code>aria-</code> 可以正常使用。</li>
+</ul>
+<h3 id="属性设置">属性设置</h3>
+<ul>
+<li>在组件行内设置属性（以便 <code>propTypes</code> 校验），不要在外部改变属性的值；</li>
+<li><p>属性较多使用 <code>{...this.props}</code> 语法；</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">const</span> component <span class="op">=</span> <span class="op">&lt;</span>Component /<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="va">component</span>.<span class="va">props</span>.<span class="at">foo</span> <span class="op">=</span> x<span class="op">;</span> <span class="co">// bad</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="va">component</span>.<span class="va">props</span>.<span class="at">bar</span> <span class="op">=</span> y<span class="op">;</span> <span class="co">// also bad</span></a>
+<a class="sourceLine" id="cb9-4" title="4"></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb9-6" title="6"><span class="kw">const</span> component <span class="op">=</span> <span class="op">&lt;</span>Component foo<span class="op">={</span>x<span class="op">}</span> bar<span class="op">={</span>y<span class="op">}</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb9-7" title="7"></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb9-9" title="9"><span class="kw">const</span> props <span class="op">=</span> <span class="op">{};</span></a>
+<a class="sourceLine" id="cb9-10" title="10"><span class="va">props</span>.<span class="at">foo</span> <span class="op">=</span> x<span class="op">;</span></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="va">props</span>.<span class="at">bar</span> <span class="op">=</span> y<span class="op">;</span></a>
+<a class="sourceLine" id="cb9-12" title="12"><span class="kw">const</span> component <span class="op">=</span> <span class="op">&lt;</span>Component <span class="op">{</span>...<span class="at">props</span><span class="op">}</span> /&gt;<span class="op">;</span></a></code></pre></div></li>
+<li><p>属性值明确为 <code>true</code> 时，省略值。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb10-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb10-3" title="3">  hidden<span class="op">={</span><span class="kw">true</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb10-4" title="4">/&gt;</a>
+<a class="sourceLine" id="cb10-5" title="5"></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb10-8" title="8">  hidden</a>
+<a class="sourceLine" id="cb10-9" title="9">/<span class="op">&gt;</span></a></code></pre></div></li>
+</ul>
+<h3 id="属性对齐方式">属性对齐方式</h3>
+<ul>
+<li>属性较少时可以行内排列；</li>
+<li>属性较多时每行一个属性，闭合标签单独成行。</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb11-1" title="1"><span class="co">// bad - too long</span></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="op">&lt;</span>input type<span class="op">=</span><span class="st">&quot;text&quot;</span> value<span class="op">={</span><span class="kw">this</span>.<span class="va">state</span>.<span class="at">newDinosaurName</span><span class="op">}</span> onChange<span class="op">={</span><span class="kw">this</span>.<span class="va">inputHandler</span>.<span class="at">bind</span>(<span class="kw">this</span><span class="op">,</span> <span class="st">&#39;newDinosaurName&#39;</span>)<span class="op">}</span> /&gt;  </a>
+<a class="sourceLine" id="cb11-3" title="3"></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="co">// bad - aligning attributes after the tag</span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="op">&lt;</span>input type<span class="op">=</span><span class="st">&quot;text&quot;</span>  </a>
+<a class="sourceLine" id="cb11-6" title="6">       value<span class="op">={</span><span class="kw">this</span>.<span class="va">state</span>.<span class="at">newDinosaurName</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb11-7" title="7">       onChange<span class="op">={</span><span class="kw">this</span>.<span class="va">inputHandler</span>.<span class="at">bind</span>(<span class="kw">this</span><span class="op">,</span> <span class="st">&#39;newDinosaurName&#39;</span>)<span class="op">}</span> /&gt; </a>
+<a class="sourceLine" id="cb11-8" title="8"></a>
+<a class="sourceLine" id="cb11-9" title="9"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb11-10" title="10"><span class="op">&lt;</span>input  </a>
+<a class="sourceLine" id="cb11-11" title="11">  type<span class="op">=</span><span class="st">&quot;text&quot;</span></a>
+<a class="sourceLine" id="cb11-12" title="12">  value<span class="op">={</span><span class="kw">this</span>.<span class="va">state</span>.<span class="at">newDinosaurName</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb11-13" title="13">  onChange<span class="op">={</span><span class="kw">this</span>.<span class="va">inputHandler</span>.<span class="at">bind</span>(<span class="kw">this</span><span class="op">,</span> <span class="st">&#39;newDinosaurName&#39;</span>)<span class="op">}</span></a>
+<a class="sourceLine" id="cb11-14" title="14"> /&gt;</a>
+<a class="sourceLine" id="cb11-15" title="15"> </a>
+<a class="sourceLine" id="cb11-16" title="16"> <span class="co">// if props fit in one line then keep it on the same line</span></a>
+<a class="sourceLine" id="cb11-17" title="17"><span class="op">&lt;</span>Foo bar<span class="op">=</span><span class="st">&quot;bar&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb11-18" title="18"></a>
+<a class="sourceLine" id="cb11-19" title="19"><span class="co">// children get indented normally</span></a>
+<a class="sourceLine" id="cb11-20" title="20"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb11-21" title="21">  superLongParam<span class="op">=</span><span class="st">&quot;bar&quot;</span></a>
+<a class="sourceLine" id="cb11-22" title="22">  anotherSuperLongParam<span class="op">=</span><span class="st">&quot;baz&quot;</span></a>
+<a class="sourceLine" id="cb11-23" title="23"><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb11-24" title="24">  <span class="op">&lt;</span>Spazz /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb11-25" title="25">&lt;/Foo<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb11-26" title="26"></a>
+<a class="sourceLine" id="cb11-27" title="27"></a>
+<a class="sourceLine" id="cb11-28" title="28"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb11-29" title="29"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb11-30" title="30">  bar<span class="op">=</span><span class="st">&quot;bar&quot;</span></a>
+<a class="sourceLine" id="cb11-31" title="31">  baz<span class="op">=</span><span class="st">&quot;baz&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb11-32" title="32"></a>
+<a class="sourceLine" id="cb11-33" title="33"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb11-34" title="34"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb11-35" title="35">  bar<span class="op">=</span><span class="st">&quot;bar&quot;</span></a>
+<a class="sourceLine" id="cb11-36" title="36">  baz<span class="op">=</span><span class="st">&quot;baz&quot;</span></a>
+<a class="sourceLine" id="cb11-37" title="37">/&gt;</a></code></pre></div>
+<h3 id="属性空格">属性空格</h3>
+<ul>
+<li>属性 <code>=</code> 前后不要添加空格；</li>
+<li>JSX 中的花括号前后不要添加空格。</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb12-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="op">&lt;</span>Foo bar<span class="op">={</span> baz <span class="op">}</span> foo <span class="op">=</span> <span class="st">&quot;bar&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb12-3" title="3"></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="op">&lt;</span>Foo bar<span class="op">={</span>baz<span class="op">}</span> foo<span class="op">=</span><span class="st">&quot;bar&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb12-6" title="6"></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="co">// good { left: &#39;20px&#39; } 为一个对象</span></a>
+<a class="sourceLine" id="cb12-8" title="8"><span class="op">&lt;</span>Foo style<span class="op">={{</span> <span class="dt">left</span><span class="op">:</span> <span class="st">&#39;20px&#39;</span> <span class="op">}}</span> /&gt;</a></code></pre></div>
+<h3 id="key">key</h3>
+<ul>
+<li>避免使用数组的索引作为 <code>key</code> 值，优先使用唯一 ID 作为 key 值。 （<a href="https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318">参考文章</a>）</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb13-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="op">{</span><span class="va">todos</span>.<span class="at">map</span>((todo<span class="op">,</span> index) <span class="op">=&gt;</span></a>
+<a class="sourceLine" id="cb13-3" title="3">  <span class="op">&lt;</span>Todo</a>
+<a class="sourceLine" id="cb13-4" title="4">    <span class="op">{</span>...<span class="at">todo</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb13-5" title="5">    key<span class="op">={</span>index<span class="op">}</span></a>
+<a class="sourceLine" id="cb13-6" title="6">  /&gt;</a>
+<a class="sourceLine" id="cb13-7" title="7">)<span class="op">}</span></a>
+<a class="sourceLine" id="cb13-8" title="8"></a>
+<a class="sourceLine" id="cb13-9" title="9"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb13-10" title="10"><span class="op">{</span><span class="va">todos</span>.<span class="at">map</span>(todo <span class="op">=&gt;</span> (</a>
+<a class="sourceLine" id="cb13-11" title="11">  <span class="op">&lt;</span>Todo</a>
+<a class="sourceLine" id="cb13-12" title="12">    <span class="op">{</span>...<span class="at">todo</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb13-13" title="13">    key<span class="op">={</span><span class="va">todo</span>.<span class="at">id</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb13-14" title="14">  /&gt;</a>
+<a class="sourceLine" id="cb13-15" title="15">))<span class="op">}</span></a></code></pre></div>
+<p>同时满足以下条件时可以使用数组索引作为 <code>key</code> 值：</p>
+<ul>
+<li>数组是静态的：不经过计算，也不会改变；</li>
+<li>数组项没有 id；</li>
+<li>数组不做排序或者过滤操作。</li>
+</ul>
+<h3 id="proptypes-及默认值"><code>propTypes</code> 及默认值</h3>
+<ul>
+<li>组件属性都应该在 <code>propTypes</code> 中声明类型；</li>
+<li>始终明确指定非必选属性的默认值。</li>
+</ul>
+<blockquote>
+<p>Why? propTypes are a form of documentation, and providing defaultProps means the reader of your code doesn’t have to assume as much. In addition, it can mean that your code can omit certain type checks.</p>
+</blockquote>
+<div class="sourceCode" id="cb14"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb14-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">function</span> <span class="at">SFC</span>(<span class="op">{</span> foo<span class="op">,</span> bar<span class="op">,</span> children <span class="op">}</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-3" title="3">  <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;{</span>foo<span class="op">}{</span>bar<span class="op">}{</span>children<span class="op">}</span>&lt;/div<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb14-5" title="5"></a>
+<a class="sourceLine" id="cb14-6" title="6"><span class="va">SFC</span>.<span class="at">propTypes</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-7" title="7">  <span class="dt">foo</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="va">number</span>.<span class="at">isRequired</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-8" title="8">  <span class="dt">bar</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="at">string</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-9" title="9">  <span class="dt">children</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="at">node</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-10" title="10"><span class="op">};</span></a>
+<a class="sourceLine" id="cb14-11" title="11"></a>
+<a class="sourceLine" id="cb14-12" title="12"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb14-13" title="13"><span class="kw">function</span> <span class="at">SFC</span>(<span class="op">{</span> foo<span class="op">,</span> bar<span class="op">,</span> children <span class="op">}</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-14" title="14">  <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;{</span>foo<span class="op">}{</span>bar<span class="op">}{</span>children<span class="op">}</span>&lt;/div<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb14-15" title="15"><span class="op">}</span></a>
+<a class="sourceLine" id="cb14-16" title="16"></a>
+<a class="sourceLine" id="cb14-17" title="17"><span class="va">SFC</span>.<span class="at">propTypes</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-18" title="18">  <span class="dt">foo</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="va">number</span>.<span class="at">isRequired</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-19" title="19">  <span class="dt">bar</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="at">string</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-20" title="20">  <span class="dt">children</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="at">node</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-21" title="21"><span class="op">};</span></a>
+<a class="sourceLine" id="cb14-22" title="22"></a>
+<a class="sourceLine" id="cb14-23" title="23"><span class="va">SFC</span>.<span class="at">defaultProps</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-24" title="24">  <span class="dt">bar</span><span class="op">:</span> <span class="st">&#39;&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-25" title="25">  <span class="dt">children</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb14-26" title="26"><span class="op">};</span></a></code></pre></div>
+<h3 id="a11y">A11Y</h3>
+<ul>
+<li><p>Always include an <code>alt</code> prop on <code>&lt;img&gt;</code> tags. If the image is presentational, <code>alt</code> can be an empty string or the <code>&lt;img&gt;</code> must have <code>role="presentation"</code>. eslint: <a href="https://github.com/evcohen/eslint-plugin-jsx-a11y/blob/master/docs/rules/alt-text.md"><code>jsx-a11y/alt-text</code></a></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb15-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="op">&lt;</span>img src<span class="op">=</span><span class="st">&quot;hello.jpg&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb15-3" title="3"></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="op">&lt;</span>img src<span class="op">=</span><span class="st">&quot;hello.jpg&quot;</span> alt<span class="op">=</span><span class="st">&quot;Me waving hello&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb15-6" title="6"></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb15-8" title="8"><span class="op">&lt;</span>img src<span class="op">=</span><span class="st">&quot;hello.jpg&quot;</span> alt<span class="op">=</span><span class="st">&quot;&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb15-9" title="9"></a>
+<a class="sourceLine" id="cb15-10" title="10"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb15-11" title="11"><span class="op">&lt;</span>img src<span class="op">=</span><span class="st">&quot;hello.jpg&quot;</span> role<span class="op">=</span><span class="st">&quot;presentation&quot;</span> /&gt;</a></code></pre></div></li>
+<li><p>Do not use words like “image”, “photo”, or “picture” in <code>&lt;img&gt;</code> <code>alt</code> props. eslint: <a href="https://github.com/evcohen/eslint-plugin-jsx-a11y/blob/master/docs/rules/img-redundant-alt.md"><code>jsx-a11y/img-redundant-alt</code></a></p>
+<blockquote>
+<p>Why? Screenreaders already announce <code>img</code> elements as images, so there is no need to include this information in the alt text.</p>
+</blockquote>
+<div class="sourceCode" id="cb16"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb16-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="op">&lt;</span>img src<span class="op">=</span><span class="st">&quot;hello.jpg&quot;</span> alt<span class="op">=</span><span class="st">&quot;Picture of me waving hello&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb16-3" title="3"></a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="op">&lt;</span>img src<span class="op">=</span><span class="st">&quot;hello.jpg&quot;</span> alt<span class="op">=</span><span class="st">&quot;Me waving hello&quot;</span> /&gt;</a></code></pre></div></li>
+<li><p>Use only valid, non-abstract <a href="https://www.w3.org/TR/wai-aria/roles#role_definitions">ARIA roles</a>. eslint: <a href="https://github.com/evcohen/eslint-plugin-jsx-a11y/blob/master/docs/rules/aria-role.md"><code>jsx-a11y/aria-role</code></a></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb17-1" title="1"><span class="co">// bad - not an ARIA role</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="op">&lt;</span>div role<span class="op">=</span><span class="st">&quot;datepicker&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb17-3" title="3"></a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="co">// bad - abstract ARIA role</span></a>
+<a class="sourceLine" id="cb17-5" title="5"><span class="op">&lt;</span>div role<span class="op">=</span><span class="st">&quot;range&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb17-6" title="6"></a>
+<a class="sourceLine" id="cb17-7" title="7"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb17-8" title="8"><span class="op">&lt;</span>div role<span class="op">=</span><span class="st">&quot;button&quot;</span> /&gt;</a></code></pre></div></li>
+<li><p>Do not use <code>accessKey</code> on elements. eslint: <a href="https://github.com/evcohen/eslint-plugin-jsx-a11y/blob/master/docs/rules/no-access-key.md"><code>jsx-a11y/no-access-key</code></a></p></li>
+</ul>
+<blockquote>
+<p>Why? Inconsistencies between keyboard shortcuts and keyboard commands used by people using screenreaders and keyboards complicate accessibility.</p>
+</blockquote>
+<div class="sourceCode" id="cb18"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb18-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="op">&lt;</span>div accessKey<span class="op">=</span><span class="st">&quot;h&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb18-3" title="3"></a>
+<a class="sourceLine" id="cb18-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb18-5" title="5"><span class="op">&lt;</span>div /<span class="op">&gt;</span></a></code></pre></div>
+<h2 id="引号">引号</h2>
+<ul>
+<li>JSX 属性使用<strong>双引号</strong> <code>"</code>；</li>
+<li>JS 使用<strong>单引号</strong> <code>'</code>；</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb19-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="op">&lt;</span>Foo bar<span class="op">=</span><span class="st">&#39;bar&#39;</span> /&gt;</a>
+<a class="sourceLine" id="cb19-3" title="3"></a>
+<a class="sourceLine" id="cb19-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb19-5" title="5"><span class="op">&lt;</span>Foo bar<span class="op">=</span><span class="st">&quot;bar&quot;</span> /&gt;</a>
+<a class="sourceLine" id="cb19-6" title="6"></a>
+<a class="sourceLine" id="cb19-7" title="7"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb19-8" title="8"><span class="op">&lt;</span>Foo style<span class="op">={{</span> <span class="dt">left</span><span class="op">:</span> <span class="st">&quot;20px&quot;</span> <span class="op">}}</span> /&gt;</a>
+<a class="sourceLine" id="cb19-9" title="9"></a>
+<a class="sourceLine" id="cb19-10" title="10"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb19-11" title="11"><span class="op">&lt;</span>Foo style<span class="op">={{</span> <span class="dt">left</span><span class="op">:</span> <span class="st">&#39;20px&#39;</span> <span class="op">}}</span> /&gt;</a>
+<a class="sourceLine" id="cb19-12" title="12"></a>
+<a class="sourceLine" id="cb19-13" title="13"><span class="co">// JavaScript Expression</span></a>
+<a class="sourceLine" id="cb19-14" title="14"><span class="kw">const</span> person <span class="op">=</span> <span class="op">&lt;</span>Person name<span class="op">={</span><span class="va">window</span>.<span class="at">isLoggedIn</span> <span class="op">?</span> <span class="va">window</span>.<span class="at">name</span> : <span class="st">&#39;&#39;</span><span class="op">}</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb19-15" title="15"></a>
+<a class="sourceLine" id="cb19-16" title="16"><span class="co">// HTML/JSX</span></a>
+<a class="sourceLine" id="cb19-17" title="17"><span class="kw">const</span> myDivElement <span class="op">=</span> <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;foo&quot;</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb19-18" title="18"><span class="kw">const</span> app <span class="op">=</span> <span class="op">&lt;</span>Nav color<span class="op">=</span><span class="st">&quot;blue&quot;</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb19-19" title="19"></a>
+<a class="sourceLine" id="cb19-20" title="20"><span class="kw">const</span> content <span class="op">=</span> (</a>
+<a class="sourceLine" id="cb19-21" title="21">  <span class="op">&lt;</span>Container<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb19-22" title="22">    <span class="op">{</span><span class="va">window</span>.<span class="at">isLoggedIn</span> <span class="op">?</span> <span class="op">&lt;</span>Nav /<span class="op">&gt;</span> : <span class="op">&lt;</span>Login /<span class="op">&gt;}</span></a>
+<a class="sourceLine" id="cb19-23" title="23">  &lt;/Container<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb19-24" title="24">)<span class="op">;</span></a></code></pre></div>
+<h2 id="条件-jsx">条件 JSX</h2>
+<ul>
+<li><p>简短的输出在行内直接三元运算符；</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb20-1" title="1"><span class="op">{</span><span class="kw">this</span>.<span class="va">state</span>.<span class="at">show</span> <span class="op">&amp;&amp;</span> <span class="st">&#39;This is Shown&#39;</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="op">{</span><span class="kw">this</span>.<span class="va">state</span>.<span class="at">on</span> <span class="op">?</span> <span class="st">&#39;On&#39;</span> : <span class="st">&#39;Off&#39;</span><span class="op">}</span></a></code></pre></div></li>
+<li><p>较复杂的结构可以在 <code>.render()</code> 方法内定义一个以 <code>Html</code> 结尾的变量（命名方式仅供参考）；</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">let</span> dinosaurHtml <span class="op">=</span> <span class="st">&#39;&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb21-2" title="2"></a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="cf">if</span> (<span class="kw">this</span>.<span class="va">state</span>.<span class="at">showDinosaurs</span>) <span class="op">{</span>  </a>
+<a class="sourceLine" id="cb21-4" title="4">  dinosaurHtml <span class="op">=</span> (</a>
+<a class="sourceLine" id="cb21-5" title="5">    <span class="op">&lt;</span>section<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb21-6" title="6">      <span class="op">&lt;</span>DinosaurTable /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb21-7" title="7">      <span class="op">&lt;</span>DinosaurPager /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb21-8" title="8">    &lt;/section<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb21-9" title="9">  )<span class="op">;</span></a>
+<a class="sourceLine" id="cb21-10" title="10"><span class="op">}</span></a>
+<a class="sourceLine" id="cb21-11" title="11"></a>
+<a class="sourceLine" id="cb21-12" title="12"><span class="cf">return</span> (  </a>
+<a class="sourceLine" id="cb21-13" title="13">  <span class="op">&lt;</span>div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb21-14" title="14">    ...</a>
+<a class="sourceLine" id="cb21-15" title="15">    <span class="op">{</span>dinosaurHtml<span class="op">}</span></a>
+<a class="sourceLine" id="cb21-16" title="16">    ...</a>
+<a class="sourceLine" id="cb21-17" title="17">  &lt;/div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb21-18" title="18">)<span class="op">;</span></a></code></pre></div></li>
+<li><p>运算逻辑简单的直接使用行内迭代。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb22-1" title="1"><span class="cf">return</span> (</a>
+<a class="sourceLine" id="cb22-2" title="2">  <span class="op">&lt;</span>div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb22-3" title="3">    <span class="op">{</span><span class="kw">this</span>.<span class="va">props</span>.<span class="va">data</span>.<span class="at">map</span>((data) <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb22-4" title="4">      <span class="cf">return</span> (<span class="op">&lt;</span>Component data<span class="op">={</span>data<span class="op">}</span> key<span class="op">={</span><span class="va">data</span>.<span class="at">id</span><span class="op">}</span> /&gt;)<span class="op">;</span></a>
+<a class="sourceLine" id="cb22-5" title="5">    <span class="op">}</span>)<span class="op">}</span></a>
+<a class="sourceLine" id="cb22-6" title="6">  &lt;/div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb22-7" title="7">)<span class="op">;</span></a></code></pre></div></li>
+</ul>
+<h2 id="使用"><code>()</code> 使用</h2>
+<ul>
+<li><p>多行的 JSX 使用 <code>()</code> 包裹，有组件嵌套时使用多行模式；</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb23-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="cf">return</span> (<span class="op">&lt;</span>div<span class="op">&gt;&lt;</span>ComponentOne /<span class="op">&gt;&lt;</span>ComponentTwo /<span class="op">&gt;</span>&lt;/div<span class="op">&gt;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb23-3" title="3"></a>
+<a class="sourceLine" id="cb23-4" title="4"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb23-5" title="5"><span class="kw">var</span> multilineJsx <span class="op">=</span> (  </a>
+<a class="sourceLine" id="cb23-6" title="6">  <span class="op">&lt;</span>header<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-7" title="7">    <span class="op">&lt;</span>Logo /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-8" title="8">    <span class="op">&lt;</span>Nav /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-9" title="9">  &lt;/header<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-10" title="10">)<span class="op">;</span></a>
+<a class="sourceLine" id="cb23-11" title="11"></a>
+<a class="sourceLine" id="cb23-12" title="12"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb23-13" title="13"><span class="cf">return</span> (</a>
+<a class="sourceLine" id="cb23-14" title="14"><span class="op">&lt;</span>div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-15" title="15">  <span class="op">&lt;</span>ComponentOne /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-16" title="16">  <span class="op">&lt;</span>ComponentTwo /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-17" title="17">&lt;/div<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb23-18" title="18">)<span class="op">;</span></a></code></pre></div></li>
+<li><p>单行 JSX 省略 <code>()</code>。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">var</span> singleLineJsx <span class="op">=</span> <span class="op">&lt;</span>h1<span class="op">&gt;</span>Simple JSX&lt;/h1<span class="op">&gt;;</span>  </a>
+<a class="sourceLine" id="cb24-2" title="2"></a>
+<a class="sourceLine" id="cb24-3" title="3"><span class="co">// good, when single line</span></a>
+<a class="sourceLine" id="cb24-4" title="4"><span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb24-5" title="5">  <span class="kw">const</span> body <span class="op">=</span> <span class="op">&lt;</span>div<span class="op">&gt;</span>hello&lt;/div<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb24-6" title="6"></a>
+<a class="sourceLine" id="cb24-7" title="7">  <span class="cf">return</span> <span class="op">&lt;</span>MyComponent<span class="op">&gt;{</span>body<span class="op">}</span>&lt;/MyComponent<span class="op">&gt;;</span></a>
+<a class="sourceLine" id="cb24-8" title="8"><span class="op">}</span></a></code></pre></div></li>
+</ul>
+<h2 id="自闭合标签">自闭合标签</h2>
+<ul>
+<li>自闭合所有没有子组件的标签；</li>
+<li>自闭合标签 <strong><code>/</code> 前留一个空格</strong>。</li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb25-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="op">&lt;</span>Logo<span class="op">&gt;</span>&lt;/Logo<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="op">&lt;</span>Logo/<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb25-4" title="4"></a>
+<a class="sourceLine" id="cb25-5" title="5"><span class="co">// very bad</span></a>
+<a class="sourceLine" id="cb25-6" title="6"><span class="op">&lt;</span>Foo                 /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb25-7" title="7"></a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb25-10" title="10"> /<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb25-11" title="11"></a>
+<a class="sourceLine" id="cb25-12" title="12"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb25-13" title="13"><span class="op">&lt;</span>Logo /<span class="op">&gt;</span></a></code></pre></div>
+<h2 id="ref">Ref</h2>
+<ul>
+<li><p>始终使用 ref 回调。 eslint: <a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-string-refs.md"><code>react/no-string-refs</code></a></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb26-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb26-2" title="2"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb26-3" title="3">  ref<span class="op">=</span><span class="st">&quot;myRef&quot;</span></a>
+<a class="sourceLine" id="cb26-4" title="4">/&gt;</a>
+<a class="sourceLine" id="cb26-5" title="5"></a>
+<a class="sourceLine" id="cb26-6" title="6"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb26-7" title="7"><span class="op">&lt;</span>Foo</a>
+<a class="sourceLine" id="cb26-8" title="8">  ref<span class="op">={</span>(ref) <span class="op">=&gt;</span> <span class="op">{</span> <span class="kw">this</span>.<span class="at">myRef</span> <span class="op">=</span> ref<span class="op">;</span> <span class="op">}}</span></a>
+<a class="sourceLine" id="cb26-9" title="9">/&gt;</a></code></pre></div></li>
+</ul>
+<h2 id="方法">方法</h2>
+<ul>
+<li><p>使用箭头函数遮蔽本地变量。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb27-1" title="1"><span class="kw">function</span> <span class="at">ItemList</span>(props) <span class="op">{</span></a>
+<a class="sourceLine" id="cb27-2" title="2">  <span class="cf">return</span> (</a>
+<a class="sourceLine" id="cb27-3" title="3">    <span class="op">&lt;</span>ul<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb27-4" title="4">      <span class="op">{</span><span class="va">props</span>.<span class="va">items</span>.<span class="at">map</span>((item<span class="op">,</span> index) <span class="op">=&gt;</span> (</a>
+<a class="sourceLine" id="cb27-5" title="5">        <span class="op">&lt;</span>Item</a>
+<a class="sourceLine" id="cb27-6" title="6">          key<span class="op">={</span><span class="va">item</span>.<span class="at">key</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb27-7" title="7">          onClick<span class="op">={</span>() <span class="op">=&gt;</span> <span class="at">doSomethingWith</span>(<span class="va">item</span>.<span class="at">name</span><span class="op">,</span> index)<span class="op">}</span></a>
+<a class="sourceLine" id="cb27-8" title="8">        /&gt;</a>
+<a class="sourceLine" id="cb27-9" title="9">      ))<span class="op">}</span></a>
+<a class="sourceLine" id="cb27-10" title="10">    &lt;/ul<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb27-11" title="11">  )<span class="op">;</span></a>
+<a class="sourceLine" id="cb27-12" title="12"><span class="op">}</span></a></code></pre></div></li>
+<li><p>在 <code>constructor</code> 中绑定 <code>this</code>，而不是引用的时候绑定。eslint: <a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-bind.md"><code>react/jsx-no-bind</code></a></p>
+<blockquote>
+<p>Why? A bind call in the render path creates a brand new function on every single render.</p>
+</blockquote>
+<div class="sourceCode" id="cb28"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb28-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb28-2" title="2"><span class="kw">class</span> <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-3" title="3">  <span class="at">onClickDiv</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-4" title="4">    <span class="co">// do stuff</span></a>
+<a class="sourceLine" id="cb28-5" title="5">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb28-6" title="6"></a>
+<a class="sourceLine" id="cb28-7" title="7">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-8" title="8">    <span class="cf">return</span> <span class="op">&lt;</span>div onClick<span class="op">={</span><span class="kw">this</span>.<span class="va">onClickDiv</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb28-9" title="9">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb28-10" title="10"><span class="op">}</span></a>
+<a class="sourceLine" id="cb28-11" title="11"></a>
+<a class="sourceLine" id="cb28-12" title="12"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb28-13" title="13"><span class="kw">class</span> <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-14" title="14">  <span class="at">constructor</span>(props) <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-15" title="15">    <span class="kw">super</span>(props)<span class="op">;</span></a>
+<a class="sourceLine" id="cb28-16" title="16"></a>
+<a class="sourceLine" id="cb28-17" title="17">    <span class="kw">this</span>.<span class="at">onClickDiv</span> <span class="op">=</span> <span class="kw">this</span>.<span class="va">onClickDiv</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb28-18" title="18">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb28-19" title="19"></a>
+<a class="sourceLine" id="cb28-20" title="20">  <span class="at">onClickDiv</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-21" title="21">    <span class="co">// do stuff</span></a>
+<a class="sourceLine" id="cb28-22" title="22">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb28-23" title="23"></a>
+<a class="sourceLine" id="cb28-24" title="24">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb28-25" title="25">    <span class="cf">return</span> <span class="op">&lt;</span>div onClick<span class="op">={</span><span class="kw">this</span>.<span class="at">onClickDiv</span><span class="op">}</span> /&gt;<span class="op">;</span></a>
+<a class="sourceLine" id="cb28-26" title="26">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb28-27" title="27"><span class="op">}</span></a></code></pre></div></li>
+<li><p>不要使用下划线作为 React 组件方法的前缀。 &gt; Why? Underscore prefixes are sometimes used as a convention in other languages to denote privacy. But, unlike those languages, there is no native support for privacy in JavaScript, everything is public. Regardless of your intentions, adding underscore prefixes to your properties does not actually make them private, and any property (underscore-prefixed or not) should be treated as being public. See issues <a href="https://github.com/airbnb/javascript/issues/1024">#1024</a>, and <a href="https://github.com/airbnb/javascript/issues/490">#490</a> for a more in-depth discussion.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb29-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="va">React</span>.<span class="at">createClass</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb29-3" title="3">  <span class="at">_onClickSubmit</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb29-4" title="4">    <span class="co">// do stuff</span></a>
+<a class="sourceLine" id="cb29-5" title="5">  <span class="op">},</span></a>
+<a class="sourceLine" id="cb29-6" title="6"></a>
+<a class="sourceLine" id="cb29-7" title="7">  <span class="co">// other stuff</span></a>
+<a class="sourceLine" id="cb29-8" title="8"><span class="op">}</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb29-9" title="9"></a>
+<a class="sourceLine" id="cb29-10" title="10"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb29-11" title="11"><span class="kw">class</span> <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb29-12" title="12">  <span class="at">onClickSubmit</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb29-13" title="13">    <span class="co">// do stuff</span></a>
+<a class="sourceLine" id="cb29-14" title="14">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb29-15" title="15"></a>
+<a class="sourceLine" id="cb29-16" title="16">  <span class="co">// other stuff</span></a>
+<a class="sourceLine" id="cb29-17" title="17"><span class="op">}</span></a></code></pre></div></li>
+<li><p><code>render</code> 方法中应该始终返回值。eslint: <a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/require-render-return.md"><code>react/require-render-return</code></a></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb30-1" title="1"><span class="co">// bad</span></a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb30-3" title="3">  (<span class="op">&lt;</span>div /<span class="op">&gt;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb30-4" title="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb30-5" title="5"></a>
+<a class="sourceLine" id="cb30-6" title="6"><span class="co">// good</span></a>
+<a class="sourceLine" id="cb30-7" title="7"><span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb30-8" title="8">  <span class="cf">return</span> (<span class="op">&lt;</span>div /<span class="op">&gt;</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb30-9" title="9"><span class="op">}</span></a></code></pre></div></li>
+<li>事件处理方法以 <code>handle</code> 或者 <code>on</code> 开头，如 <code>handleClick() {}</code>。<br />
+</li>
+<li><p>慎用 <a href="https://babeljs.io/docs/plugins/transform-class-properties/">Class Properties</a> 语法（最终规范可能会跟提案有差异）。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">class</span> SayHello <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb31-2" title="2">  <span class="at">constructor</span>(props) <span class="op">{</span></a>
+<a class="sourceLine" id="cb31-3" title="3">    <span class="kw">super</span>(props)<span class="op">;</span></a>
+<a class="sourceLine" id="cb31-4" title="4">    <span class="kw">this</span>.<span class="at">state</span> <span class="op">=</span> <span class="op">{</span><span class="dt">message</span><span class="op">:</span> <span class="st">&#39;Hello!&#39;</span><span class="op">};</span></a>
+<a class="sourceLine" id="cb31-5" title="5">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb31-6" title="6">  <span class="co">// </span><span class="al">WARNING</span><span class="co">: this syntax is experimental!</span></a>
+<a class="sourceLine" id="cb31-7" title="7">  <span class="co">// Using an arrow here binds the method:</span></a>
+<a class="sourceLine" id="cb31-8" title="8">  handleClick <span class="op">=</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb31-9" title="9">    <span class="at">alert</span>(<span class="kw">this</span>.<span class="va">state</span>.<span class="at">message</span>)<span class="op">;</span></a>
+<a class="sourceLine" id="cb31-10" title="10">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb31-11" title="11"></a>
+<a class="sourceLine" id="cb31-12" title="12">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb31-13" title="13">    <span class="cf">return</span> (</a>
+<a class="sourceLine" id="cb31-14" title="14">      <span class="op">&lt;</span>button onClick<span class="op">={</span><span class="kw">this</span>.<span class="at">handleClick</span><span class="op">}&gt;</span></a>
+<a class="sourceLine" id="cb31-15" title="15">        Say hello</a>
+<a class="sourceLine" id="cb31-16" title="16">      &lt;/button<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb31-17" title="17">    )<span class="op">;</span></a>
+<a class="sourceLine" id="cb31-18" title="18">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb31-19" title="19"><span class="op">}</span></a></code></pre></div></li>
+</ul>
+<h2 id="组件代码组织">组件代码组织</h2>
+<ul>
+<li>按照生命周期顺序组织组件的属性、方法；</li>
+<li>方法（属性）之间空一行；</li>
+<li><code>render()</code> 方法始终放在最后；</li>
+<li>自定义方法 React API 方法之后、<code>render()</code> 之前；</li>
+<li><p><code>class extends React.Component</code> 顺序：</p>
+<ol type="1">
+<li><code>static</code> 属性</li>
+<li><code>static</code> 方法</li>
+<li><code>constructor</code></li>
+<li><code>getChildContext</code></li>
+<li><code>componentWillMount</code></li>
+<li><code>componentDidMount</code></li>
+<li><code>componentWillReceiveProps</code></li>
+<li><code>shouldComponentUpdate</code></li>
+<li><code>componentWillUpdate</code></li>
+<li><code>componentDidUpdate</code></li>
+<li><code>componentWillUnmount</code></li>
+<li><em>点击处理函数或者其他事件处理函数</em>，如 <code>onClickSubmit()</code> 或 <code>onChangeDescription()</code></li>
+<li><em><code>render</code> 的 getter 方法</em>，如 <code>getSelectReason()</code> 或 <code>getFooterContent()</code></li>
+<li><em>可选的 render 方法</em>，如 <code>renderNavigation()</code> 或 <code>renderProfilePicture()</code></li>
+<li><code>render</code></li>
+</ol></li>
+<li><p>定义 <code>propTypes</code>, <code>defaultProps</code>, <code>contextTypes</code>：</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb32-1" title="1"><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb32-2" title="2"><span class="im">import</span> PropTypes <span class="im">from</span> <span class="st">&#39;prop-types&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb32-3" title="3"></a>
+<a class="sourceLine" id="cb32-4" title="4"><span class="kw">class</span> Link <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-5" title="5">  <span class="kw">static</span> <span class="at">methodsAreOk</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-6" title="6">    <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb32-7" title="7">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb32-8" title="8"></a>
+<a class="sourceLine" id="cb32-9" title="9">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-10" title="10">    <span class="cf">return</span> (</a>
+<a class="sourceLine" id="cb32-11" title="11">      <span class="op">&lt;</span>a href<span class="op">={</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">url</span><span class="op">}</span> data<span class="op">-</span>id<span class="op">={</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">id</span><span class="op">}&gt;</span></a>
+<a class="sourceLine" id="cb32-12" title="12">        <span class="op">{</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">text</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb32-13" title="13">      &lt;/a<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb32-14" title="14">    )<span class="op">;</span> </a>
+<a class="sourceLine" id="cb32-15" title="15">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb32-16" title="16"><span class="op">}</span></a>
+<a class="sourceLine" id="cb32-17" title="17"></a>
+<a class="sourceLine" id="cb32-18" title="18"><span class="va">Link</span>.<span class="at">propTypes</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-19" title="19">  <span class="dt">id</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="va">number</span>.<span class="at">isRequired</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-20" title="20">  <span class="dt">url</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="va">string</span>.<span class="at">isRequired</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-21" title="21">  <span class="dt">text</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="at">string</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-22" title="22"><span class="op">};</span></a>
+<a class="sourceLine" id="cb32-23" title="23"></a>
+<a class="sourceLine" id="cb32-24" title="24"><span class="va">Link</span>.<span class="at">defaultProps</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-25" title="25">  <span class="dt">text</span><span class="op">:</span> <span class="st">&#39;Hello World&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-26" title="26"><span class="op">};</span></a>
+<a class="sourceLine" id="cb32-27" title="27"></a>
+<a class="sourceLine" id="cb32-28" title="28"><span class="im">export</span> <span class="im">default</span> Link<span class="op">;</span></a>
+<a class="sourceLine" id="cb32-29" title="29"></a>
+<a class="sourceLine" id="cb32-30" title="30"></a>
+<a class="sourceLine" id="cb32-31" title="31"><span class="co">// static</span></a>
+<a class="sourceLine" id="cb32-32" title="32"><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb32-33" title="33"><span class="im">import</span> PropTypes <span class="im">from</span> <span class="st">&#39;prop-types&#39;</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb32-34" title="34"></a>
+<a class="sourceLine" id="cb32-35" title="35"><span class="kw">class</span> Link <span class="kw">extends</span> <span class="va">React</span>.<span class="at">Component</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-36" title="36">  <span class="kw">static</span> propTypes <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-37" title="37">    <span class="dt">id</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="va">number</span>.<span class="at">isRequired</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-38" title="38">    <span class="dt">url</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="va">string</span>.<span class="at">isRequired</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-39" title="39">    <span class="dt">text</span><span class="op">:</span> <span class="va">PropTypes</span>.<span class="at">string</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-40" title="40">  <span class="op">};</span></a>
+<a class="sourceLine" id="cb32-41" title="41"></a>
+<a class="sourceLine" id="cb32-42" title="42">  <span class="kw">static</span> defaultProps <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-43" title="43">    <span class="dt">text</span><span class="op">:</span> <span class="st">&#39;Hello World&#39;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb32-44" title="44">  <span class="op">};</span></a>
+<a class="sourceLine" id="cb32-45" title="45"></a>
+<a class="sourceLine" id="cb32-46" title="46">  <span class="kw">static</span> <span class="at">methodsAreOk</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-47" title="47">    <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span></a>
+<a class="sourceLine" id="cb32-48" title="48">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb32-49" title="49"></a>
+<a class="sourceLine" id="cb32-50" title="50">  <span class="at">render</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-51" title="51">    <span class="cf">return</span> (</a>
+<a class="sourceLine" id="cb32-52" title="52">      <span class="op">&lt;</span>a href<span class="op">={</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">url</span><span class="op">}</span> data<span class="op">-</span>id<span class="op">={</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">id</span><span class="op">}&gt;</span></a>
+<a class="sourceLine" id="cb32-53" title="53">        <span class="op">{</span><span class="kw">this</span>.<span class="va">props</span>.<span class="at">text</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb32-54" title="54">      &lt;/a<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb32-55" title="55">    )<span class="op">;</span></a>
+<a class="sourceLine" id="cb32-56" title="56">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb32-57" title="57"><span class="op">}</span></a>
+<a class="sourceLine" id="cb32-58" title="58"></a>
+<a class="sourceLine" id="cb32-59" title="59"><span class="im">export</span> <span class="im">default</span> Link<span class="op">;</span></a></code></pre></div></li>
+<li><p><code>React.createClass</code> 顺序：eslint: <a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md"><code>react/sort-comp</code></a></p>
+<ol type="1">
+<li><code>displayName</code></li>
+<li><code>propTypes</code></li>
+<li><code>contextTypes</code></li>
+<li><code>childContextTypes</code></li>
+<li><code>mixins</code></li>
+<li><code>statics</code></li>
+<li><code>defaultProps</code></li>
+<li><code>getDefaultProps</code></li>
+<li><code>getInitialState</code></li>
+<li><code>getChildContext</code></li>
+<li><code>componentWillMount</code></li>
+<li><code>componentDidMount</code></li>
+<li><code>componentWillReceiveProps</code></li>
+<li><code>shouldComponentUpdate</code></li>
+<li><code>componentWillUpdate</code></li>
+<li><code>componentDidUpdate</code></li>
+<li><code>componentWillUnmount</code></li>
+<li><em>点击处理函数或者其他事件处理函数</em>，如 <code>onClickSubmit()</code> 或 <code>onChangeDescription()</code></li>
+<li><em><code>render</code> 的 getter 方法</em>，如 <code>getSelectReason()</code> 或 <code>getFooterContent()</code></li>
+<li><em>可选的 render 方法</em>，如 <code>renderNavigation()</code> 或 <code>renderProfilePicture()</code></li>
+<li><code>render</code></li>
+</ol></li>
+</ul>
+<h2 id="注释">注释</h2>
+<ul>
+<li><p>组件之间的注释需要用 <code>{}</code> 包裹。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode js"><code class="sourceCode javascript"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">var</span> content <span class="op">=</span> (</a>
+<a class="sourceLine" id="cb33-2" title="2">  <span class="op">&lt;</span>Nav<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb33-3" title="3">    <span class="op">{</span><span class="co">/* child comment, put {} around */</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb33-4" title="4">    <span class="op">&lt;</span>Person</a>
+<a class="sourceLine" id="cb33-5" title="5">      <span class="co">/* multi</span></a>
+<a class="sourceLine" id="cb33-6" title="6"><span class="co">         line</span></a>
+<a class="sourceLine" id="cb33-7" title="7"><span class="co">         comment */</span></a>
+<a class="sourceLine" id="cb33-8" title="8">      name<span class="op">={</span><span class="va">window</span>.<span class="at">isLoggedIn</span> <span class="op">?</span> <span class="va">window</span>.<span class="at">name</span> : <span class="st">&#39;&#39;</span><span class="op">}</span> <span class="co">// end of line comment</span></a>
+<a class="sourceLine" id="cb33-9" title="9">    /&gt;</a>
+<a class="sourceLine" id="cb33-10" title="10">  &lt;/Nav<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb33-11" title="11">)<span class="op">;</span></a></code></pre></div></li>
+</ul>
+<h2 id="ismounted"><code>isMounted</code></h2>
+<ul>
+<li>Do not use <code>isMounted</code>. eslint: <a href="https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-is-mounted.md"><code>react/no-is-mounted</code></a></li>
+</ul>
+<blockquote>
+<p>Why? <a href="https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html"><code>isMounted</code> is an anti-pattern</a>, is not available when using ES6 classes, and is on its way to being officially deprecated.</p>
+</blockquote>
+<h2 id="代码校验工具">代码校验工具</h2>
+<ul>
+<li><a href="https://www.github.com/eslint/eslint">ESLint</a></li>
+<li><a href="https://github.com/yannickcr/eslint-plugin-react">ESLint React Plugin</a></li>
+<li><a href="https://github.com/evcohen/eslint-plugin-jsx-a11y">ESLint JSX A11Y Plugin</a></li>
+</ul>
+</body>
+</html>
